@@ -1,0 +1,7 @@
+name: mruby-mrubyc
+description: mruby/c library
+author: HASUMI Hitoshi
+website: https://github.com/hasumikin/mruby-mrubyc
+protocol: git
+repository: https://github.com/hasumikin/mruby-mrubyc.git
+license: MIT
