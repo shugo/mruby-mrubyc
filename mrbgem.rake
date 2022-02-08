@@ -20,21 +20,13 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
 
   file "#{dir}/repos/mrubyc/mrblib" => "#{dir}/repos/mrubyc"
 
-  file "#{dir}/mrblib/mrblib.c" => "#{dir}/repos/mrubyc/mrblib" do |f|
+  file "#{build_dir}/src/mrblib.c" => "#{dir}/repos/mrubyc/mrblib" do |f|
     mrblib_sources = Dir.glob("#{dir}/repos/mrubyc/mrblib/*.rb").join(" ")
-    sh "#{build.mrbcfile} -B mrblib_bytecode -o #{dir}/src/mrblib.c #{mrblib_sources}"
+    sh "#{build.mrbcfile} -B mrblib_bytecode -o #{f.name} #{mrblib_sources}"
   end
 
-  task :copy_mrubyc_headers => "#{dir}/repos/mrubyc" do
-    sh "mkdir -p #{build_dir}/src"
-    sh "cp #{dir}/repos/mrubyc/src/*.h #{build_dir}/src/"
-    sh "mkdir -p #{build_dir}/src/hal_posix"
-    sh "cp #{dir}/repos/mrubyc/src/hal_posix/hal.h #{build_dir}/src/hal_posix/"
+  file objfile("#{build_dir}/src/mrblib") => "#{build_dir}/src/mrblib.c" do |f|
+    cc.run f.name, f.prerequisites.first
   end
 
-  Rake::Task[:copy_mrubyc_headers].invoke
-  mrubyc_srcs.each do |mrubyc_src|
-    Rake::Task[objfile("#{build_dir}/src/#{mrubyc_src}")].invoke
-  end
-  Rake::Task[objfile("#{build_dir}/src/hal_posix/hal")].invoke
 end
