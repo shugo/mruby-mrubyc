@@ -9,6 +9,9 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
     FileUtils.cd "#{dir}/repos" do
       sh "git clone -b mrubyc3 https://github.com/mrubyc/mrubyc.git"
     end
+    FileUtils.cd "#{dir}/repos/mrubyc" do
+      sh "git checkout 0f22570"
+    end
   end
 
   mrubyc_srcs = %w(alloc   c_math    c_range  console keyvalue rrt0    vm
