@@ -6,11 +6,15 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
   mrubyc_dir = "#{dir}/repos/mrubyc"
 
   file mrubyc_dir do
+    branch = ENV['MRUBYC_BRANCH'] || "master"
+    revision = ENV['MRUBYC_REVISION']
     FileUtils.cd "#{dir}/repos" do
-      sh "git clone -b mrubyc3 https://github.com/mrubyc/mrubyc.git"
+      sh "git clone -b #{branch} https://github.com/mrubyc/mrubyc.git"
     end
-    FileUtils.cd "#{dir}/repos/mrubyc" do
-      sh "git checkout 0f22570"
+    if revision
+      FileUtils.cd "#{dir}/repos/mrubyc" do
+        sh "git checkout #{revision}"
+      end
     end
   end
 
