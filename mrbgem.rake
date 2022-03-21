@@ -31,7 +31,9 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
   mrubyc_srcs << "#{hal_dir}/hal"
 
   mrubyc_srcs.each do |mrubyc_src|
-    file objfile("#{build_dir}/src/#{mrubyc_src}") => "#{mrubyc_dir}/src/#{mrubyc_src}.c" do |f|
+    obj = objfile("#{build_dir}/src/#{mrubyc_src}")
+    build.libmruby_objs << obj
+    file obj => "#{mrubyc_dir}/src/#{mrubyc_src}.c" do |f|
       cc.run f.name, f.prerequisites.first
     end
     file "#{mrubyc_dir}/src/#{mrubyc_src}.c" => mrubyc_dir
