@@ -30,6 +30,9 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
   end
   mrubyc_srcs << "#{hal_dir}/hal"
 
+  if cc.defines.include?("DISABLE_MRUBY")
+    build.libmruby_objs.clear
+  end
   mrubyc_srcs.each do |mrubyc_src|
     obj = objfile("#{build_dir}/src/#{mrubyc_src}")
     build.libmruby_objs << obj
