@@ -46,7 +46,7 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
 
   file "#{build_dir}/src/mrblib.c" => "#{mrubyc_dir}/mrblib" do |f|
     mrblib_sources = Dir.glob("#{mrubyc_dir}/mrblib/*.rb").join(" ")
-    sh "#{build.mrbcfile} -B mrblib_bytecode -o #{f.name} #{mrblib_sources}"
+    sh "#{ENV['QEMU']} #{build.mrbcfile} -B mrblib_bytecode -o #{f.name} #{mrblib_sources}"
   end
 
   file objfile("#{build_dir}/src/mrblib") => "#{build_dir}/src/mrblib.c" do |f|
