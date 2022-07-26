@@ -22,11 +22,17 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
                    c_array c_numeric c_string error   load     symbol
                    c_hash  c_object  class    global  value)
   begin
-    hal_dir = cc.defines.find{ |d|
-      d.include? "MRBC_USE_HAL_"
-    }.match(/\A(MRBC_USE_)(.+)\z/)[2].downcase
+    hal_dir = cc.defines.find { |d|
+      d.start_with? "MRBC_USE_HAL"
+    }.then { |hal|
+      if hal.start_with?("MRBC_USE_HAL_")
+        hal.match(/\A(MRBC_USE_)(.+)\z/)[2].downcase
+      else
+        hal.match(/\A(MRBC_USE_HAL=)(.+)\z/)[2]
+      end
+    }
   rescue => NoMethodError
-    raise "\nError!\nMRBC_USE_something must be defined in build_config!\n\n"
+    raise "\nError!\nMRBC_USE_HAL(_xxx) must be defined in build_config!\n\n"
   end
   mrubyc_srcs << "#{hal_dir}/hal"
 
