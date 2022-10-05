@@ -2,6 +2,7 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
   spec.license = 'MIT'
   spec.authors = 'HASUMI Hitoshi'
   spec.summary = 'mruby/c library'
+  spec.add_dependency 'mruby-bin-picorbc', github: 'hasumikin/mruby-bin-picorbc'
 
   mrubyc_dir = "#{dir}/repos/mrubyc"
 
@@ -20,7 +21,7 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
 
   mrubyc_srcs = %w(alloc   c_math    c_range  console keyvalue rrt0    vm
                    c_array c_numeric c_string error   load     symbol
-                   c_hash  c_object  class    global  value)
+                   c_hash  c_object  class    global  value    mrblib)
   begin
     hal_dir = cc.defines.find { |d|
       d.start_with? "MRBC_USE_HAL"
@@ -42,8 +43,10 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
   mrubyc_srcs.each do |mrubyc_src|
     obj = objfile("#{build_dir}/src/#{mrubyc_src}")
     build.libmruby_objs << obj
-    file obj => "#{mrubyc_dir}/src/#{mrubyc_src}.c" do |f|
-      cc.run f.name, f.prerequisites.first
+    unless mrubyc_src == "mrblib"
+      file obj => "#{mrubyc_dir}/src/#{mrubyc_src}.c" do |f|
+        cc.run f.name, f.prerequisites.first
+      end
     end
     file "#{mrubyc_dir}/src/#{mrubyc_src}.c" => mrubyc_dir
   end
@@ -51,6 +54,7 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
   file "#{mrubyc_dir}/mrblib" => mrubyc_dir
 
   file "#{build_dir}/src/mrblib.c" => "#{mrubyc_dir}/mrblib" do |f|
+    Rake::Task.tasks.find{|t|t.name.include?("picorbc")}.invoke
     mrblib_sources = Dir.glob("#{mrubyc_dir}/mrblib/*.rb").join(" ")
     sh "#{ENV['QEMU']} #{build.mrbcfile} -B mrblib_bytecode -o #{f.name} #{mrblib_sources}"
   end
