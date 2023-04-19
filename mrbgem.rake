@@ -6,10 +6,10 @@ MRuby::Gem::Specification.new('mruby-mrubyc') do |spec|
   mrubyc_dir = "#{dir}/repos/mrubyc"
 
   file mrubyc_dir do
-    branch = ENV['MRUBYC_BRANCH'] || "master"
+    branch = ENV['MRUBYC_BRANCH'] || "for_prk_firmware_0.9.18"
     revision = ENV['MRUBYC_REVISION']
     FileUtils.cd "#{dir}/repos" do
-      sh "git clone -b #{branch} https://github.com/mrubyc/mrubyc.git"
+      sh "git clone -b #{branch} https://github.com/shugo/mrubyc.git"
     end
     if revision
       FileUtils.cd "#{dir}/repos/mrubyc" do
